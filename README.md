@@ -1,9 +1,18 @@
+# Collection & Financial Risk Intelligence Dashboard
+
 **Enterprise Real Estate Financial Surveillance, Installment Lifecycle DAX Engine & Bank Risk Analytics**
 
 An interactive **Power BI** dashboard that tracks installment collections and credit risk across **8 large-scale real estate projects**, showing what has been collected, what is overdue, and whether the risk sits with banks or with cash customers.
 
 > Graduation project — Data Analysis Diploma, Route Academy
 > *Uncovering the Stories Hidden Beneath the Data*
+
+## 📁 Project Files
+
+| File | Description |
+|------|-------------|
+| 📊 [Graduation Project.pbix](Graduation%20Project.pbix) | Power BI report (35 pages) |
+| 📗 [Graduation Project Data Source.xlsm](Graduation%20Project%20Data%20Source.xlsm) | Source data (8 project worksheets) |
 
 ---
 
@@ -79,46 +88,76 @@ Interactive Dashboard
 
 ## 4. DAX Measures
 
-Each project has its own table. In the examples below, replace `'Project'` with the table name and adjust column names, total units, and dates to match your model.
+Measures are grouped in a dedicated measure table per project (for example `Lake Front Dax`), plus `Global Summary Dax`, `Collection Dax`, and `Measurse HTML`. The tables below use **Lake Front 6** as the example; the other 7 projects follow the same pattern with their own table name and suffix (for example `Sold Rihana`, `Collection Rate Skyline`). Most lifecycle measures are wrapped in `VAR Result = ... RETURN IF(ISBLANK(Result), 0, Result)` so blanks show as 0; it is omitted below for readability.
 
 ### Sales & Project Metrics
 
 | Measure | DAX Expression | Purpose |
 |---------|----------------|---------|
-| **# Sold** | `CALCULATE(DISTINCTCOUNT('Project'[Unit Number]), NOT('Project'[Customer Name] IN {"Summary Total","Paid Installments","Remaining Installments"}))` | Counts real customers only, excluding control rows. |
-| **Sold %** | `DIVIDE([# Sold], <Total Units>, 0)` | Sold units as a share of the project's fixed total units. |
-| **Project Completion %** | `AVERAGE('Project'[POC])` | Average construction progress. |
+| **Adopted Total Units Lake** | `1203` | Fixed total units of the project, used as the Sold % denominator. |
+| **Sold Lake** | `CALCULATE(DISTINCTCOUNT('Lake Front 6'[رقم الوحدة]), 'Lake Front 6'[اسم العميل] <> "Summary Total", 'Lake Front 6'[اسم العميل] <> "Paid Installments", 'Lake Front 6'[اسم العميل] <> "Remaining Installments")` | Counts real customers only, excluding the 3 control rows. |
+| **Sold % Lake** | `DIVIDE([Sold Lake], [Adopted Total Units Lake], 0)` | Sold units as a share of the project's total units. |
+| **Project Completion % Lake** | `CALCULATE(AVERAGE('Lake Front 6'[POC]), 'Lake Front 6'[اسم العميل] <> "Summary Total", 'Lake Front 6'[اسم العميل] <> "Paid Installments", 'Lake Front 6'[اسم العميل] <> "Remaining Installments")` | Average construction progress across customers. |
 
 ### Installment Lifecycle
 
 | Measure | DAX Expression | Purpose |
 |---------|----------------|---------|
-| **Issued Invoices** | `CALCULATE(COUNTROWS('Project'), 'Project'[State] IN {"PAID","DUE - NOT PAID"})` | Installments that are payable now. |
-| **Collected Invoices** | `CALCULATE(COUNTROWS('Project'), 'Project'[State] = "PAID")` | Installments already paid. |
-| **Outstanding Invoices** | `[Issued Invoices] - [Collected Invoices]` | Payable but unpaid installments. |
-| **Collection Rate** | `DIVIDE([Collected Invoices], [Issued Invoices])` | Share of issued invoices that were collected. |
-| **Outstanding %** | `DIVIDE([Outstanding Invoices], [Issued Invoices])` | Share of issued invoices still unpaid. |
-| **Collected Amount** | `CALCULATE(SUM('Project'[Amount]), 'Project'[State] = "PAID")` | Money collected. |
-| **Outstanding Amount** | `CALCULATE(SUM('Project'[Amount]), 'Project'[State] = "DUE - NOT PAID")` | Money overdue. |
-| **Invoiced Amount** | `[Collected Amount] + [Outstanding Amount]` | Total demand issued. |
+| **Issued Invoices Lake** | `CALCULATE(COUNTROWS('Lake Front 6'), 'Lake Front 6'[Installment State] <> "NOT DUE")` | Installments that are payable now (paid or overdue). |
+| **Collected Invoices Lake** | `CALCULATE(COUNTROWS('Lake Front 6'), 'Lake Front 6'[Installment State] = "PAID")` | Installments already paid. |
+| **Outstanding Invoices Lake** | `[Issued Invoices Lake] - [Collected Invoices Lake]` | Payable but unpaid installments. |
+| **Collection Rate Lake** | `DIVIDE([Collected Invoices Lake], [Issued Invoices Lake], 0)` | Share of issued invoices that were collected. |
+| **Outstanding % Lake** | `DIVIDE([Outstanding Invoices Lake], [Issued Invoices Lake], 0)` | Share of issued invoices still unpaid. |
+| **Collected Amount Lake** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[Installment State] = "PAID")` | Money collected. |
+| **Total Invoice Amount Lake** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[Installment State] <> "NOT DUE")` | Total demand issued so far. |
+| **Outstanding Amount Lake** | `[Total Invoice Amount Lake] - [Collected Amount Lake]` | Money overdue. |
 
-### Time Cutoff Segmentation (Old vs. New)
-
-The cutoff dates are hardcoded inside each measure. Change them to your own start and end dates.
+### Bank vs. Cash Exposure
 
 | Measure | DAX Expression | Purpose |
 |---------|----------------|---------|
-| **Collected OLD** | `CALCULATE([Collected Amount], 'Project'[Date] < DATE(2026,7,1))` | Collections before the start date. |
-| **Collected NEW** | `CALCULATE([Collected Amount], 'Project'[Date] >= DATE(2026,7,1), 'Project'[Date] <= DATE(2026,8,3))` | Collections inside the date range, inclusive. |
-| **Outstanding OLD** | `CALCULATE([Outstanding Amount], 'Project'[Date] < DATE(2026,7,1))` | Overdue amounts before the start date. |
-| **Outstanding NEW** | `CALCULATE([Outstanding Amount], 'Project'[Date] >= DATE(2026,7,1), 'Project'[Date] <= DATE(2026,8,3))` | Overdue amounts inside the date range. |
+| **Bank Outstanding Lake** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[اسم العميل] <> "Summary Total", 'Lake Front 6'[اسم العميل] <> "Paid Installments", 'Lake Front 6'[اسم العميل] <> "Remaining Installments", 'Lake Front 6'[Installment State] = "DUE - NOT PAID", 'Lake Front 6'[Payment Type] = "Bank")` | Overdue amount owed through banks. |
+| **Cash Outstanding Lake** | Same as above with `'Lake Front 6'[Payment Type] = "Cash"` | Overdue amount owed by cash customers. |
+| **Outstanding Balance Lake** | `[Bank Outstanding Lake] + [Cash Outstanding Lake]` | Total overdue balance. |
 
-The same pattern is repeated with `COUNTROWS` for the `OLD Rows` and `NEW Rows` measures.
+### Time Cutoff Segmentation (Old vs. New)
+
+The cutoff dates are hardcoded inside each measure.
+
+| Measure | DAX Expression | Purpose |
+|---------|----------------|---------|
+| **Collected OLD Lake Front** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[Installment State] = "PAID", 'Lake Front 6'[Date] < DATE(2026,7,1))` | Collections before the start date. |
+| **Collected NEW Lake Front** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[Installment State] = "PAID", 'Lake Front 6'[Date] >= DATE(2026,7,1), 'Lake Front 6'[Date] <= DATE(2026,8,3))` | Collections inside the date range, inclusive. |
+| **Outstanding OLD Lake Front** | `CALCULATE(SUM('Lake Front 6'[Amount]), 'Lake Front 6'[Installment State] = "DUE - NOT PAID", 'Lake Front 6'[Date] < DATE(2026,7,1))` | Overdue amounts before the start date. |
+| **OLD Rows Lake Front** | `CALCULATE(DISTINCTCOUNT('Lake Front 6'[اسم العميل]), 'Lake Front 6'[Date] < DATE(2026,7,1), NOT ISBLANK('Lake Front 6'[اسم العميل]))` | Customers with records before the start date. |
+
+`Outstanding NEW` and `NEW Rows` follow the same pattern with the inclusive date range.
+
+### Global Summary & Cross-Project Measures
+
+| Measure | DAX Expression | Purpose |
+|---------|----------------|---------|
+| **Total Sold** | `[Sold Kattameya] + [Sold Zahra] + [Sold Degla Landmark] + [Sold Skyline] + [Sold Degla Palms] + [Sold Lake] + [Sold Crystal] + [Sold Rihana]` | Sold customers across all 8 projects. |
+| **Sold %** | `DIVIDE([Total Sold], [Adopted Total Units], 0)` | Portfolio sold rate. |
+| **Total Issued Invoices** | `[Issued Invoices Kattameya] + [Issued Invoices Zahra] + ... + [Issued Invoices Rihana]` | Issued invoices across all projects. |
+| **Total Collected Invoices** | `[Collected Invoices Kattameya] + [Collected Invoices Zahra] + ... + [Collected Invoices Rihana]` | Collected invoices across all projects. |
+| **Collection Rate** | `DIVIDE([Total Collected Invoices], [Total Issued Invoices], 0)` | Portfolio collection rate. |
+| **Total Collected Amount** | `[Collected Amount Kattameya] + [Collected Amount Zahra] + ... + [Collected Amount Rihana]` | Total money collected. |
+| **Total Outstanding Balance** | `[Outstanding Balance Kattameya] + [Outstanding Balance Zahra] + ... + [Outstanding Balance Rihana]` | Total overdue balance. |
+| **Collected OLD by Project** | `SWITCH(SELECTEDVALUE(Project[Project Name]), "One Kattameya Compound", [Collected OLD Kattameya], "Zahra North Coast", [Collected OLD Zahra], ... , "Rihana", [Collected OLD Rihana], <sum of all 8 projects>)` | Shows the selected project, or the portfolio total when nothing is selected. |
+
+### HTML Measures (Custom KPI Cards)
+
+| Measure | Purpose |
+|---------|---------|
+| **HTML Sold %**, **HTML Collection Rate**, **HTML Completion**, **HTML Outstanding %** | Build the animated KPI cards on the Global Summary page. Each one assembles an HTML string (title, `value / total`, and a progress bar with a CSS animation) from the underlying measures and renders it in the HTML Content visual. |
+| **معمار المرشدي** | Home page title with a glowing, fading text effect written in HTML and CSS. |
 
 **Why it is written this way**
-- `DIVIDE` returns BLANK (or the alternate result) instead of an error when the denominator is zero.
-- `CALCULATE` changes the filter context, which is how each measure isolates one state or one time window.
-- Control rows are excluded in the sales measures so they never count as customers.
+- `DIVIDE` returns the alternate result (0) instead of an error when the denominator is zero.
+- `CALCULATE` changes the filter context, which is how each measure isolates one state, one payment type, or one time window.
+- The 3 control rows stay in the table and are excluded inside the sales and bank/cash measures, so they never count as customers.
+- Separate per-project measures keep every project page independent, and the `SWITCH` measures bring them together on the global page.
 
 ---
 
@@ -130,7 +169,11 @@ The same pattern is repeated with `COUNTROWS` for the `OLD Rows` and `NEW Rows` 
 
 Every analytical page carries a Home button, a Project Completion % indicator, and a No. of Units card.
 
-**Custom HTML visuals:** HTML was used on the Home page to style the company name "معمار المرشدي" (Memar Al Morshedy) with a glowing title effect, and the same branding appears as a custom card on the Global Summary page.
+The report contains **35 pages**: Home, Global Summary, Collection By Date Summary, and 32 project pages (Overall, Cash, Bank, and Bank-wise for each of the 8 projects).
+
+**Custom HTML visuals:** the report uses the *HTML Content* custom visual. HTML measures (`HTML Sold %`, `HTML Collection Rate`, `HTML Completion`, `HTML Outstanding %`) build the styled KPI cards on the Global Summary page, and HTML also styles the company name "معمار المرشدي" (Memar Al Morshedy) on the Home page.
+
+**Model organization:** the measures are grouped in dedicated measure tables — one per project (for example `Kattameya Dax`, `Lake Front Dax`), plus `Collection Dax` (old vs. new), `Global Summary Dax`, and `Measurse HTML`. Measure names follow the pattern `<Measure> <Project>` (for example `Collection Rate Rihana`).
 
 ---
 
@@ -148,6 +191,15 @@ Every analytical page carries a Home button, a Project Completion % indicator, a
 ## Tools & Skills
 
 **Power BI** · **Power Query** · **DAX** · **Excel** · **HTML** · Data Modeling · Dashboard Design · UI/UX
+
+## Repository Structure
+
+```
+├── Graduation Project.pbix              # Power BI report
+├── Graduation Project Data Source.xlsm  # Source data (8 project worksheets)
+├── images/                              # Dashboard screenshots
+└── README.md
+---
 
 ## Author
 

@@ -181,12 +181,24 @@ The report contains **35 pages**: Home, Global Summary, Collection By Date Summa
 
 ---
 
+## 7. Recommendations
+
+| Finding | Recommendation |
+|---------|----------------|
+| **66% of overdue amounts (521.9M EGP) sit with banks** | Prioritize follow-up with the financing banks: build a bank-wise aging review, escalate the largest outstanding balances first, and agree on settlement timelines with each bank. |
+| **34% of overdue amounts (269.1M EGP) sit with cash customers** | Set up direct collection workflows for cash customers: automated payment reminders before the due date and early legal or collection action for long-overdue accounts. |
+| **10.14% of issued invoices (1,381) are still outstanding** | Use the Old vs. New cutoff view to separate aged delinquencies from newly matured dues, and focus recovery efforts on the aged group first. |
+| **Collection rate differs between projects** | Review the projects with the lowest collection rates on their project pages, find out whether the cause is bank delays or customer behavior, and apply the fix that matches. |
+| **Only 4.18% of portfolio units are sold** | Review the sales strategy for projects with low sold rates, since unsold inventory limits future cash inflow. |
+| **Project completion averages 70.55%** | Link collection milestones to construction progress, so installment follow-up stays aligned with delivery. |
+| **Reporting was fragmented across 8 workbooks** | Keep the dashboard as the single source of truth and refresh it on a regular schedule, so management monitors risk continuously instead of after the fact. |
+
+---
+
 ## Tools & Skills
 
 **Power BI** · **Power Query** · **DAX** · **Excel** · **HTML** · Data Modeling · Dashboard Design · UI/UX
 
-└── README.md
----
 
 ## Author
 

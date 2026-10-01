@@ -1,5 +1,9 @@
-# Collection & Financial Risk Intelligence Dashboard
+## 📁 Project Files
 
+| File | Description |
+|------|-------------|
+| 📊 [Graduation Project.pbix](Graduation%20Project.pbix) | Power BI report (35 pages) |
+| 📗 [Graduation Project Data Source.xlsm](Graduation%20Project%20Data%20Source.xlsm) | Source data (8 project worksheets) |
 **Enterprise Real Estate Financial Surveillance, Installment Lifecycle DAX Engine & Bank Risk Analytics**
 
 An interactive **Power BI** dashboard that tracks installment collections and credit risk across **8 large-scale real estate projects**, showing what has been collected, what is overdue, and whether the risk sits with banks or with cash customers.

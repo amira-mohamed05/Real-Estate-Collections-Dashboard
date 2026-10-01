@@ -7,13 +7,6 @@ An interactive **Power BI** dashboard that tracks installment collections and cr
 > Graduation project — Data Analysis Diploma, Route Academy
 > *Uncovering the Stories Hidden Beneath the Data*
 
-## 📁 Project Files
-
-| File | Description |
-|------|-------------|
-| 📊 [Graduation Project.pbix](Graduation%20Project.pbix?raw=true) | Power BI report (35 pages) |
-| 📗 [Graduation Project Data Source.xlsm](Graduation%20Project%20Data%20Source.xlsm?raw=true) | Source data (8 project worksheets) |
-
 ---
 
 ## The Portfolio in Numbers

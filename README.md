@@ -11,8 +11,8 @@ An interactive **Power BI** dashboard that tracks installment collections and cr
 
 | File | Description |
 |------|-------------|
-| 📊 [Graduation Project.pbix](Graduation%20Project.pbix) | Power BI report (35 pages) |
-| 📗 [Graduation Project Data Source.xlsm](Graduation%20Project%20Data%20Source.xlsm) | Source data (8 project worksheets) |
+| 📊 [Graduation Project.pbix](Graduation%20Project.pbix?raw=true) | Power BI report (35 pages) |
+| 📗 [Graduation Project Data Source.xlsm](Graduation%20Project%20Data%20Source.xlsm?raw=true) | Source data (8 project worksheets) |
 
 ---
 
@@ -192,12 +192,6 @@ The report contains **35 pages**: Home, Global Summary, Collection By Date Summa
 
 **Power BI** · **Power Query** · **DAX** · **Excel** · **HTML** · Data Modeling · Dashboard Design · UI/UX
 
-## Repository Structure
-
-```
-├── Graduation Project.pbix              # Power BI report
-├── Graduation Project Data Source.xlsm  # Source data (8 project worksheets)
-├── images/                              # Dashboard screenshots
 └── README.md
 ---
 
@@ -205,4 +199,4 @@ The report contains **35 pages**: Home, Global Summary, Collection By Date Summa
 
 **Amira Mohamed Ali Abdelhamid**
 Data Analyst | Tanta, Egypt
-GitHub: [@Amia-Mohamed05](https://github.com/Amia-Mohamed05)
+GitHub: [@amira-mohamed05](https://github.com/amira-mohamed05)

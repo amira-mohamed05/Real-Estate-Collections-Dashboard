@@ -1,4 +1,3 @@
-# Real-Estate-Collections-Dashboard
 # Collection & Financial Risk Intelligence Dashboard
 
 **Enterprise Real Estate Financial Surveillance, Installment Lifecycle DAX Engine & Bank Risk Analytics**
